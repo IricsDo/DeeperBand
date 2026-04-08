@@ -242,7 +242,10 @@ class FourierInterpolator:
         from BoltzTraP2.units import eV
         from pymatgen.io.ase import AseAtomsAdaptor
         from scipy.constants import physical_constants
-        from spglib import spglib
+        try:
+            import spglib as spglib
+        except ImportError:
+            from spglib import spglib   # fallback for very old installs
 
         coefficients = {}
 

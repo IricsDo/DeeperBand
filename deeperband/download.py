@@ -44,7 +44,7 @@ class File:
         Download the remote file
         """
         # create the requests for the file
-        req = requests.get(self.url, stream=True)
+        req = requests.get(self.url, stream=True, verify=False)
         total = int(req.headers.get('content-length', 0))
         fname = self.fname
 

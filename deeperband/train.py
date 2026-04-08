@@ -133,10 +133,14 @@ def main(args):
     
     if args.pretrained:
         print("[using pretrained model {}]".format(args.pretrained))
-        dirname=args.pretrained
-        if not os.path.exists(dirname) and os.path.exists(os.path.join(__models__, dirname)):
-                dirname = os.path.join(__models__, dirname)
-        model.load_state_dict(dirname)
+        pretrained_path = args.pretrained
+        if not os.path.exists(pretrained_path):
+                pretrained_path = os.path.join(__models__, args.pretrained)
+        
+        checkpoint = torch.load(pretrained_path, map_location=device, weights_only=False)
+        model.load_state_dict(checkpoint)
+        print(f"[successfully loaded pretrained weights from {pretrained_path}]")
+        
     model.to(device)
     dirname=args.dataset
     if not os.path.exists(dirname) and os.path.exists(os.path.join(__data__, dirname)):

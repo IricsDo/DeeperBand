@@ -27,13 +27,17 @@ def main(args):
     set_manual_seed(args.seed)
     device = torch.device(args.device)
     
-    model=Net()
+    model = Net()
     
-    dirname=args.model_directory
+    dirname = args.model_directory
     if not os.path.exists(dirname) and os.path.exists(os.path.join(__models__, dirname)):
         dirname = os.path.join(__models__, dirname)
-    print(">Using model {}".format(args.model_directory))
-    model.load_state_dict(torch.load(dirname))
+    
+    print(f">Using model {args.model_directory}")
+    
+    # Fixed loading for newer PyTorch (weights_only=False is safe here because you trust the file)
+    checkpoint = torch.load(dirname, map_location=device, weights_only=False)
+    model.load_state_dict(checkpoint)
     model.to(device)
     model.eval()
 

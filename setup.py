@@ -1,23 +1,30 @@
 import os
 import re
 from setuptools import setup, find_packages
-from setuptools.command.install import install
-
 
 require_file = 'requirements.txt'
 package_name = "deeperband"
 
-verstrline = open(os.path.join(package_name, '__init__.py'), 'r').read()
+# ==================== Version extraction ====================
+verstrline = open(os.path.join(package_name, '__init__.py'), 'r', encoding='utf-8').read()
 vsre = r"^__version__ = ['\"]([^'\"]*)['\"]"
 mo = re.search(vsre, verstrline, re.M)
 if mo:
     __version__ = mo.group(1)
 else:
-    raise RuntimeError('Unable to find version string in "{}/__init__.py".'.format(package_name))
+    raise RuntimeError(f'Unable to find version string in "{package_name}/__init__.py".')
 
-with open(require_file) as f:
-    requirements = [r.split()[0] for r in f.read().splitlines()]
+# ==================== Requirements ====================
+with open(require_file, encoding='utf-8') as f:
+    requirements = []
+    for line in f.read().splitlines():
+        line = line.strip()
+        if line and not line.startswith('#'):
+            req = line.split('#')[0].strip()
+            if req:
+                requirements.append(req)
 
+# ==================== Long description ====================
 with open('README.md', encoding='utf-8') as f:
     long_description = f.read()
 
@@ -32,9 +39,10 @@ setup(
     author='Li Jun',
     author_email='ljcj007@ysu.edu.cn',
     url='https://github.com/ljcj007/DeeperBand',
-    entry_points = {
+    python_requires='>=3.10',          # adjust if needed
+    entry_points={
         'console_scripts': [
-            '{0} = {0}:main'.format(package_name)
+            f'{package_name} = {package_name}:main'
         ]
     },
 )
